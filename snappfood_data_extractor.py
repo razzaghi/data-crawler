@@ -37,6 +37,7 @@ page = 0
 page_size = 50
 total_count = None
 all_restaurants = []
+establishment_type= input('enter establishment type: ')
 
 while True:
     params = {
@@ -60,14 +61,16 @@ while True:
         total_count = data["count"]
         print("Total restaurants:", total_count)
         print("Open restaurants:", data["open_count"])
-
     page_restaurants = data["finalResult"]
+    
 
     if not page_restaurants:
         print("No more results received.")
         break
-
-    all_restaurants.extend(page_restaurants)
+    for restaurant in  page_restaurants:
+       if restaurant["type"] == "VENDOR":
+            if restaurant["data"]["establishment"] == establishment_type.upper():
+                 all_restaurants.append(restaurant["data"])
 
     print(f"Page {page}: received {len(page_restaurants)} items; ")
     print( f"total collected: {len(all_restaurants)}")
