@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import requests
 
@@ -93,7 +94,8 @@ with open("data.json", "w", encoding="utf-8") as file:
     json.dump(filtered_data, file, ensure_ascii=False, indent=4)
 
 print("Saved items:", len(filtered_data))
-
+city_folder = Path("menus") / city_name / establishment_type.lower()
+city_folder.mkdir(parents=True, exist_ok=True)
 for vendor in filtered_data:
     vendor_code = vendor["vendorCode"]
 
@@ -110,7 +112,7 @@ for vendor in filtered_data:
     
     establishment_data = {"establishment_name": vendor["title"], "menu": menu_data}
     
-    file_name =f"menus/{vendor_code}.json"
+    file_name = city_folder / f"{vendor_code}.json"    
     
     with open(file_name, "w", encoding="utf-8") as file:
         json.dump(establishment_data, file, ensure_ascii=False, indent=4)
