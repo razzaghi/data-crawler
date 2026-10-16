@@ -1,7 +1,7 @@
 import json
 import requests
 
-city_name = input("Enter Name Of City: ")
+city_name = input("enter name of city: ")
 
 headers = {
     "Accept": "application/json, text/plain, */*",
@@ -36,8 +36,8 @@ url = "https://snappfood.ir/search/api/v4/restaurant/vendors-list"
 page = 0
 page_size = 50
 total_count = None
-all_restaurants = []
-establishment_type= input('enter establishment type: ')
+all_data= []
+establishment_set = set()
 
 while True:
     params = {
@@ -68,20 +68,28 @@ while True:
         print("No more results received.")
         break
     for restaurant in  page_restaurants:
-       if restaurant["type"] == "VENDOR":
-            if restaurant["data"]["establishment"] == establishment_type.upper():
-                 all_restaurants.append(restaurant["data"])
+       if restaurant["type"] == "VENDOR":  
+                all_data.append(restaurant["data"])
+                establishment_set.add(restaurant["data"]["establishment"])
 
     print(f"Page {page}: received {len(page_restaurants)} items; ")
-    print( f"total collected: {len(all_restaurants)}")
-    
+    print( f"total collected: {len(all_data)}")
 
-    if len(all_restaurants) >= total_count:
+    if len(all_data) >= total_count:
         break
 
     page += 1
+    
+for establishment in sorted(establishment_set):
+    print(establishment)
+    
+establishment_type = input("enter establishment type: ").upper()
+filtered_data = []
+for data in all_data:
+    if data['establishment'] == establishment_type:
+        filtered_data.append(data)
+            
+with open("data.json", "w", encoding="utf-8") as file:
+    json.dump(filtered_data, file, ensure_ascii=False, indent=4)
 
-with open("restaurants.json", "w", encoding="utf-8") as file:
-    json.dump(all_restaurants, file, ensure_ascii=False, indent=4)
-
-print("Saved items:", len(all_restaurants))
+print("Saved items:", len(filtered_data))
