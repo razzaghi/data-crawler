@@ -116,9 +116,8 @@ for vendor in filtered_data:
             image_url = images[0].get("src") if images else None
             for variation in variations:
                 food_item = {
-                    "business_name": vendor["title"],
                     "food_title": product["title"],
-                    "food_description": product["description"],
+                    "food_description": product["description"].strip(),
                     "food_price": variation["price"],
                     "is_active": variation["active"],
                     "image_url": image_url,
@@ -127,6 +126,6 @@ for vendor in filtered_data:
 
 
     df = pd.DataFrame(all_foods)
-    file_path = city_folder / f"{vendor_code}.csv"
+    file_path = city_folder / f"{vendor['title']}.csv"
     df.to_csv(file_path, index=False, encoding="utf-8-sig")
     print("Saved:", vendor["title"], "-", len(df), "foods")
