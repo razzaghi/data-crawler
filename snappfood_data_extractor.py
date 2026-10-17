@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-
+import pandas as pd
 import requests
 
 city_name = input("enter name of city: ")
@@ -94,25 +94,39 @@ with open("data.json", "w", encoding="utf-8") as file:
     json.dump(filtered_data, file, ensure_ascii=False, indent=4)
 
 print("Saved items:", len(filtered_data))
+
 city_folder = Path("menus") / city_name / establishment_type.lower()
 city_folder.mkdir(parents=True, exist_ok=True)
+
 for vendor in filtered_data:
     vendor_code = vendor["vendorCode"]
-
     menu_url = f"https://apigw.snappfood.ir/menu-read-model/{vendor_code}"
-
     params = {"lat": vendor["lat"], "long": vendor["lon"]}
 
-    response = requests.get(menu_url, headers=headers, params=params)
+    response = requests.get(menu_url, params=params, headers=headers)
     if response.status_code != 200:
         print(response.status_code)
         continue
-
     menu_data = response.json()
-    
-    establishment_data = {"establishment_name": vendor["title"], "menu": menu_data}
-    
-    file_name = city_folder / f"{vendor_code}.json"    
-    
-    with open(file_name, "w", encoding="utf-8") as file:
-        json.dump(establishment_data, file, ensure_ascii=False, indent=4)
+    all_foods = []
+    for category in menu_data["data"]["menuCategories"]:
+        for product in category["products"]:
+            images = product.get("images", [])
+            variations = product.get("variations", [])
+            image_url = images[0].get("src") if images else None
+            for variation in variations:
+                food_item = {
+                    "business_name": vendor["title"],
+                    "food_title": product["title"],
+                    "food_description": product["description"],
+                    "food_price": variation["price"],
+                    "is_active": variation["active"],
+                    "image_url": image_url,
+                }
+                all_foods.append(food_item)
+
+
+    df = pd.DataFrame(all_foods)
+    file_path = city_folder / f"{vendor_code}.csv"
+    df.to_csv(file_path, index=False, encoding="utf-8-sig")
+    print("Saved:", vendor["title"], "-", len(df), "foods")
