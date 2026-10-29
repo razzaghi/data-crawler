@@ -7,6 +7,7 @@ class Restaurant(models.Model):
     vendor_code = models.CharField(max_length=50, unique=True)
     title = models.CharField(max_length=255)
     address = models.TextField(blank=True)
+    city = models.CharField(max_length=100, db_index=True)
     rate = models.DecimalField(max_digits=3, decimal_places=2)
     menu_url = models.URLField(max_length=500)
     is_open = models.BooleanField(default=False)
