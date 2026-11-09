@@ -6,10 +6,13 @@
     <title>Search</title>
   </head>
   <body>
-    <form action="">
+    <form action="{% url 'products' %}" method="get">
       <input type="text" name="food" placeholder="search food" />
       <select name="city">
         <option value="">select cities</option>
+        {% for city in cities %}
+          <option value="{{ city.code }}">{{ city.title }}</option>
+        {% endfor %}
       </select>
       <input type="submit" value="Search" />
     </form>

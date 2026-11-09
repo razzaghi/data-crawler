@@ -8,10 +8,27 @@
   <body>
     <h1>Search Result</h1>
     <div>
-      <div>
-        <h3></h3>
-        <p></p>
-      </div>
+      {% for product in products %}
+        <div>
+          <h3><a href="{% url 'product_detail' product.id %}">
+            {{ product.title }}
+          </a></h3>
+          <p>{{ product.price }}</p>
+        </div>
+      {% empty %}
+        <p>No products found.</p>
+      {% endfor %}
+    </div>
+    <div>
+      {% if products.has_previous %}
+        <a href="?food={{ food }}&city={{ city }}&page={{ products.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      <span>{{ products.number }} / {{ products.paginator.num_pages }}</span>
+
+      {% if products.has_next %}
+        <a href="?food={{ food }}&city={{ city }}&page={{ products.next_page_number }}">Next</a>
+      {% endif %}
     </div>
   </body>
 </html>
