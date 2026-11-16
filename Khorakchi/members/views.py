@@ -15,7 +15,7 @@ def product_view(request):
 
     products = MenuItem.objects.filter(
         is_active=True, title__icontains=food, restaurant__city__code=city
-    ).select_related("restaurant", "restaurant__city")
+    ).select_related("restaurant", "restaurant__city").order_by("price")
 
     paginator = Paginator(products, 20)
     page_number = request.GET.get("page")
