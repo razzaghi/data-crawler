@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.rtl.min.css" />
     <title>Search</title>
   </head>
   <body>
-    <form action="{% url 'products' %}" method="get">
-      <input type="text" name="food" placeholder="search food" />
-      <select name="city">
-        <option value="">select cities</option>
-        {% for city in cities %}
-          <option value="{{ city.code }}">{{ city.title }}</option>
-        {% endfor %}
-      </select>
-      <input type="submit" value="Search" />
-    </form>
+    <div class="container p-5 " style="margin-top: 250px;">
+      <form  action="{% url 'products' %}" method="get">
+        <input class="form-control mb-3" type="text" name="food" placeholder="جستجوی غذا" />
+        <select class="form-select mb-3" name="city">
+          <option value="">انتخاب شهر</option>
+          {% for city in cities %}
+            <option value="{{ city.code }}">{{ city.title }}</option>
+          {% endfor %}
+        </select>
+        <input class="btn btn-primary w-100" type="submit" value="Search" />
+      </form>
+    </div>
   </body>
 </html>
